@@ -8,6 +8,9 @@ import { execSync } from 'child_process';
 
 async function translateNews(newsListPath) {
   try {
+    // 获取 GitHub Token 作为环境变量传入
+    const githubToken = process.env.GH_TOKEN;
+    console.log("githubToken:" + githubToken.length);
     console.log("newsListPath:" + newsListPath);
     // 读取 newsList.json 文件
     const newsList = JSON.parse(fs.readFileSync(newsListPath, 'utf-8'));
@@ -51,7 +54,8 @@ async function translateNews(newsListPath) {
       // 执行提交
       execSync(`git add ${filename}`);
       execSync(`git commit -m "${commitMessage}"`);
-      execSync(`git push origin HEAD`);
+      // execSync(`git push origin HEAD`);
+      execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
       console.log(`Committed ${filename} to GitHub repository`);
     }
 
