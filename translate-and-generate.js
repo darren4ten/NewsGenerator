@@ -46,7 +46,12 @@ async function translateNews(newsListPath) {
       // execSync(`git push origin HEAD`);
       const authorName = 'darren4ten';
       const authorEmail = 'darren4ten@163.com';
-      const commitCommand = `git commit -m "${commitMessage}" -c "user.name=${authorName}" -c "user.email=${authorEmail}"`;
+      // 设置用户信息
+      execSync(`git config user.name "${authorName}"`);
+      execSync(`git config user.email "${authorEmail}"`);
+  
+      // 执行提交
+      const commitCommand = `git commit -m "${commitMessage}"`;
       execSync(commitCommand);
 
       console.log(`Committed ${filename} to GitHub repository`);
