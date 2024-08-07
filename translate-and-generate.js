@@ -17,14 +17,14 @@ async function translateNews(newsListPath) {
     execSync(`git config  --global user.name "${authorName}"`);
     execSync(`git config  --global user.email "${authorEmail}"`);
 
-    console.log("githubToken:" + githubToken.length);
-    console.log("newsListPath:" + newsListPath);
+    lg("githubToken:" + githubToken.length);
+    lg("newsListPath:" + newsListPath);
     // 读取 newsList.json 文件
     const newsList = JSON.parse(fs.readFileSync(newsListPath, 'utf-8'));
 
     for (const newsItem of newsList) {
       const startTime = startTimer();
-      console.log(`[${new Date()}]` + "process url:" + newsItem.url);
+      lg("process url:" + newsItem.url);
       // 使用 fetch 获取新闻网页内容
       const response = await fetch(newsItem.url);
       const html = await response.text();
@@ -36,43 +36,61 @@ async function translateNews(newsListPath) {
       const mainArticle = dom.window.document.querySelector('.article__main');
       const articleText = mainArticle.textContent.trim();
 
-      console.log(`[${new Date()}]` + "articleText :" + articleText.length);
-      console.log(`[${new Date()}]` + "Begin call translateWithThirdPartyAPI");
+      lg("articleText :" + articleText.length);
+      lg("Begin call translateWithThirdPartyAPI");
 
       // 调用第三方 API 进行翻译，这里使用假设的 API 接口
       const translatedText = await translateWithThirdPartyAPI(articleText);
-      console.log(`[${new Date()}]` + "End call translateWithThirdPartyAPI");
+      lg("End call translateWithThirdPartyAPI");
 
       // 生成静态 HTML 文件
       const staticHTML = `<html><body><h1>Translated Article</h1><p>${translatedText}</p></body></html>`;
 
       // 将生成的 HTML 写入文件
-      console.log(`[${new Date()}]` + "Begin write file---");
+      lg("Begin write file---");
       const filename = `news/article_${newsItem.id}.html`;
       fs.writeFileSync(filename, staticHTML);
-      console.log(`[${new Date()}]` + "End write file---");
-      console.log(`[${new Date()}]` + `Translated article saved to ${newsItem.id}`);
+      lg("End write file---");
+      lg(`Translated article saved to ${newsItem.id}`);
 
-      console.log(`[${new Date()}]` + "Begin add file to local repo---");
+      lg("Begin add file to local repo---");
       // 执行提交
       execSync(`git add ${filename}`);
-      console.log(`[${new Date()}]` + "End add file to local repo---");
+      lg("End add file to local repo---");
       const elapsedTime = stopTimer(startTime);
-      console.log(`Translate file${filename} cost ${elapsedTime} ms`);
+      lg(`Translate file${filename} cost ${elapsedTime} ms`);
     }
-    console.log(`[${new Date()}]` + "Begin push file to remote repo---");
+    lg("Begin push file to remote repo---");
     const commitMessage = `Add translated articles.`;
     execSync(`git commit -m "${commitMessage}"`);
     execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
-    console.log(`Committed ${filename} to GitHub repository`);
-    console.log(`[${new Date()}]` + "End push file to remote repo---");
-    console.log('Translation process completed successfully.');
+    lg(`Committed ${filename} to GitHub repository`);
+    lg("End push file to remote repo---");
+    lg('Translation process completed successfully.');
   } catch (error) {
     console.error('Error during translation:', error);
     process.exit(1);
   }
 }
+///////工具方法
+function lg(msg) {
+  console.log(`[formatDateTime(new Date())]${msg}.`);
+}
 
+function formatDateTime(date) {
+  const year = date.getFullYear();
+  const month = pad2(date.getMonth() + 1);
+  const day = pad2(date.getDate());
+  const hours = pad2(date.getHours());
+  const minutes = pad2(date.getMinutes());
+  const seconds = pad2(date.getSeconds());
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function pad2(number) {
+  return (number < 10 ? '0' : '') + number;
+}
 function startTimer() {
   return process.hrtime();
 }
@@ -83,6 +101,7 @@ function stopTimer(startTime) {
   const elapsedTimeInMilliseconds = elapsedTimeInNanoseconds / 1e6; // 毫秒
   return elapsedTimeInMilliseconds;
 }
+///////工具方法
 
 async function translateWithThirdPartyAPI(text) {
   // 设置请求的头部信息
@@ -113,7 +132,7 @@ async function translateWithThirdPartyAPI(text) {
     return `<p class="trans-content">${result?.text}</p>`;
 
   } catch (error) {
-    console.log("TransalateApi error:" + error);
+    lg("TransalateApi error:" + error);
   }
   return "--not transalted--";
 }
