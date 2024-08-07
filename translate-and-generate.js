@@ -53,7 +53,7 @@ async function translateNews(newsListPath) {
       const elapsedTime = stopTimer(startTime);
       console.log(`Translate file${filename} cost ${elapsedTime} ms`);
     }
-    const commitMessage = `Add translated article ${filename}`;
+    const commitMessage = `Add translated articles.`;
     execSync(`git commit -m "${commitMessage}"`);
     execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
     console.log(`Committed ${filename} to GitHub repository`);
