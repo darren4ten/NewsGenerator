@@ -25,5 +25,5 @@ jobs:
       
       - name: Process news list and translate
         env: 
-          AI_NEWS_TK: ${{ secrets.G_AI_NEWS }}
+          G_AI_NEWS: ${{ secrets.G_AI_NEWS }}
         run: node translate-and-generate.js "newsList.json"
