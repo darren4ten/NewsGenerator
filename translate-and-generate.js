@@ -9,7 +9,7 @@ import { execSync } from 'child_process';
 async function translateNews(newsListPath) {
   try {
     // 获取 GitHub Token 作为环境变量传入
-    const githubToken = process.env.AI_NEWS_TK;
+    const githubToken = process.env.G_AI_NEWS;
     console.log("githubToken:" + githubToken.length);
     console.log("newsListPath:" + newsListPath);
     // 读取 newsList.json 文件
