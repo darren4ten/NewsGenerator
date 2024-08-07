@@ -8,45 +8,45 @@ const { execSync } = import('child_process');
 
 async function translateNews(newsListPath) {
   try {
-    console.log("newsListPath:"+newsListPath);
+    console.log("newsListPath:" + newsListPath);
     // 读取 newsList.json 文件
     const newsList = JSON.parse(fs.readFileSync(newsListPath, 'utf-8'));
 
     for (const newsItem of newsList) {
-      
-       console.log("process url:"+newsItem.url);
+
+      console.log("process url:" + newsItem.url);
       // 使用 fetch 获取新闻网页内容
       const response = await fetch(newsItem.url);
       const html = await response.text();
-      
+
       // 使用 JSDOM 解析 HTML
       const dom = new JSDOM(html);
-      
+
       // 获取文章主要内容
       const mainArticle = dom.window.document.querySelector('.article__main');
       const articleText = mainArticle.textContent.trim();
-      
-       console.log("articleText :"+articleText);
+
+      console.log("articleText :" + articleText.length);
       // 调用第三方 API 进行翻译，这里使用假设的 API 接口
       const translatedText = await translateWithThirdPartyAPI(articleText);
-      
+
       // 生成静态 HTML 文件
       const staticHTML = `<html><body><h1>Translated Article</h1><p>${translatedText}</p></body></html>`;
-      
-       // 将生成的 HTML 写入文件
-        const filename = `news/article_${newsItem.id}.html`;
-        fs.writeFileSync(filename, newHtml);
 
-        console.log(`Translated article saved to ${filename}`);
+      // 将生成的 HTML 写入文件
+      const filename = `news/article_${newsItem.id}.html`;
+      fs.writeFileSync(filename, newHtml);
+
+      console.log(`Translated article saved to ${newsItem.id}`);
       // 提交生成的文件到 GitHub 仓库的 news 目录下
-            const commitMessage = `Add translated article ${filename}`;
-            execSync(`git add ${filename}`);
-            execSync(`git commit -m "${commitMessage}"`);
-            execSync(`git push origin HEAD`);
+      const commitMessage = `Add translated article ${filename}`;
+      execSync(`git add ${filename}`);
+      execSync(`git commit -m "${commitMessage}"`);
+      execSync(`git push origin HEAD`);
 
-            console.log(`Committed ${filename} to GitHub repository`);
+      console.log(`Committed ${filename} to GitHub repository`);
     }
-    
+
     console.log('Translation process completed successfully.');
   } catch (error) {
     console.error('Error during translation:', error);
