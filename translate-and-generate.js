@@ -4,6 +4,7 @@
 import fs from 'fs';
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
+const { execSync } = import('child_process');
 
 async function translateNews(newsListPath) {
   try {
@@ -32,8 +33,18 @@ async function translateNews(newsListPath) {
       // 生成静态 HTML 文件
       const staticHTML = `<html><body><h1>Translated Article</h1><p>${translatedText}</p></body></html>`;
       
-      // 保存静态 HTML 文件
-      fs.writeFileSync(`translated_${newsItem.id}.html`, staticHTML, 'utf-8');
+       // 将生成的 HTML 写入文件
+        const filename = `news/article_${newsItem.id}.html`;
+        fs.writeFileSync(filename, newHtml);
+
+        console.log(`Translated article saved to ${filename}`);
+      // 提交生成的文件到 GitHub 仓库的 news 目录下
+            const commitMessage = `Add translated article ${filename}`;
+            execSync(`git add ${filename}`);
+            execSync(`git commit -m "${commitMessage}"`);
+            execSync(`git push origin HEAD`);
+
+            console.log(`Committed ${filename} to GitHub repository`);
     }
     
     console.log('Translation process completed successfully.');
