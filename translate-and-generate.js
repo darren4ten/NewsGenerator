@@ -13,9 +13,7 @@ async function translateNews(newsListPath) {
     // 提交生成的文件到 GitHub 仓库的 news 目录下
     const authorName = 'darren4ten';
     const authorEmail = 'darren4ten@163.com';
-    // 设置用户信息
-    execSync(`git config  --global user.name "${authorName}"`);
-    execSync(`git config  --global user.email "${authorEmail}"`);
+
 
     lg("githubToken:" + githubToken.length);
     lg("newsListPath:" + newsListPath);
@@ -53,6 +51,9 @@ async function translateNews(newsListPath) {
       lg("End write file---");
       lg(`Translated article saved to ${newsItem.id}`);
 
+      // 设置用户信息
+      execSync(`git config  --global user.name "${authorName}"`);
+      execSync(`git config  --global user.email "${authorEmail}"`);
       lg("Begin add file to local repo---");
       // 执行提交
       execSync(`git add ${filename}`);
