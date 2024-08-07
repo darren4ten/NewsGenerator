@@ -24,4 +24,4 @@ jobs:
         run: npm install
       
       - name: Process news list and translate
-        run: node process-news.js "newsList.json"
+        run: node translate-and-generate.js "newsList.json"
