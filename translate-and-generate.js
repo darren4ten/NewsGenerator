@@ -74,7 +74,7 @@ async function translateNews(newsListPath) {
 }
 ///////工具方法
 function lg(msg) {
-  console.log(`[formatDateTime(new Date())]${msg}.`);
+  console.log(`[$(formatDateTime(new Date()))]${msg}.`);
 }
 
 function formatDateTime(date) {
