@@ -53,11 +53,12 @@ async function translateNews(newsListPath) {
 
       // 执行提交
       execSync(`git add ${filename}`);
-      execSync(`git commit -m "${commitMessage}"`);
-      // execSync(`git push origin HEAD`);
-      execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
-      console.log(`Committed ${filename} to GitHub repository`);
+
     }
+    
+    execSync(`git commit -m "${commitMessage}"`);
+    execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
+    console.log(`Committed ${filename} to GitHub repository`);
 
     console.log('Translation process completed successfully.');
   } catch (error) {
@@ -82,29 +83,22 @@ async function translateWithThirdPartyAPI(text) {
   };
 
   // 发送 POST 请求
-  var aiRes = null;
-  await fetch('https://api.cohere.com/v1/chat', {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify(data)
-  })
-    .then(async response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      // aiRes = await response.json();
-      // console.log(aiRes)
-      // return Response.json(aiRes);
-    })
-    .then(data => {
-      aiRes = data;
-      console.log('Response:', data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
+  try {
+    var aiRes = await fetch('https://api.cohere.com/v1/chat', {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify(data)
     });
+    if (!aiRes.ok) {
+      throw new Error('AI Network response was not ok');
+    }
+    var result = aiRes.json();
+    return `<p class="trans-content">${result?.text}</p>`;
 
-  return `<p class="trans-content">${aiRes?.text}</p>`;
+  } catch (error) {
+    console.log("TransalateApi error:" + error);
+  }
+  return "--not transalted--";
 }
 
 // 从命令行参数中获取 newsList.json 文件的路径
