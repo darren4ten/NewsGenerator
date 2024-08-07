@@ -42,9 +42,6 @@ async function translateNews(newsListPath) {
 
       console.log(`Translated article saved to ${newsItem.id}`);
       // 提交生成的文件到 GitHub 仓库的 news 目录下
-      const commitMessage = `Add translated article ${filename}`;
-      // execSync(`-c "user.name=darren4ten" -c "user.email=darren4ten@163.com"`);
-
       const authorName = 'darren4ten';
       const authorEmail = 'darren4ten@163.com';
       // 设置用户信息
@@ -55,7 +52,7 @@ async function translateNews(newsListPath) {
       execSync(`git add ${filename}`);
 
     }
-    
+    const commitMessage = `Add translated article ${filename}`;
     execSync(`git commit -m "${commitMessage}"`);
     execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
     console.log(`Committed ${filename} to GitHub repository`);
