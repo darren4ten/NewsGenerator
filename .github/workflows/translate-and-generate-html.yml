@@ -24,5 +24,6 @@ jobs:
         run: npm install
       
       - name: Process news list and translate
-        env: ${{ secrets.ai_news }}
+        env: 
+          AI_NEWS_TK: ${{ secrets.AI_NEWS_TK }}
         run: node translate-and-generate.js "newsList.json"
