@@ -16,7 +16,7 @@ async function translateNews(newsListPath) {
     const newsList = JSON.parse(fs.readFileSync(newsListPath, 'utf-8'));
 
     for (const newsItem of newsList) {
-
+      const startTime = startTimer();
       console.log("process url:" + newsItem.url);
       // 使用 fetch 获取新闻网页内容
       const response = await fetch(newsItem.url);
@@ -50,7 +50,8 @@ async function translateNews(newsListPath) {
 
       // 执行提交
       execSync(`git add ${filename}`);
-
+      const elapsedTime = stopTimer(startTime);
+      console.log(`Translate file${filename} cost ${elapsedTime} ms`);
     }
     const commitMessage = `Add translated article ${filename}`;
     execSync(`git commit -m "${commitMessage}"`);
@@ -62,6 +63,17 @@ async function translateNews(newsListPath) {
     console.error('Error during translation:', error);
     process.exit(1);
   }
+}
+
+function startTimer() {
+  return process.hrtime();
+}
+
+function stopTimer(startTime) {
+  const [seconds, nanoseconds] = process.hrtime(startTime);
+  const elapsedTimeInNanoseconds = seconds * 1e9 + nanoseconds; // 纳秒
+  const elapsedTimeInMilliseconds = elapsedTimeInNanoseconds / 1e6; // 毫秒
+  return elapsedTimeInMilliseconds;
 }
 
 async function translateWithThirdPartyAPI(text) {
