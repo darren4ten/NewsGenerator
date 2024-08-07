@@ -46,7 +46,7 @@ async function translateNews(newsListPath) {
 
       // 将生成的 HTML 写入文件
       lg("Begin write file---");
-      const filename = `news/article_${newsItem.id}.html`;
+      const filename = `news/article_${newsItem.id}_${parseInt(Math.random() * 1000)}.html`;
       fs.writeFileSync(filename, staticHTML);
       lg("End write file---");
       lg(`Translated article saved to ${newsItem.id}`);
@@ -76,7 +76,7 @@ async function translateNews(newsListPath) {
 }
 ///////工具方法
 function lg(msg) {
-  console.log(`[$(formatDateTime(new Date()))]${msg}.`);
+  console.log(`[${formatDateTime(new Date())}]${msg}.`);
 }
 
 function formatDateTime(date) {
