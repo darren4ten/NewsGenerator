@@ -59,10 +59,10 @@ async function translateNews(newsListPath) {
       lg("End add file to local repo---");
       const elapsedTime = stopTimer(startTime);
       lg(`Translate file${filename} cost ${elapsedTime} ms`);
+      const commitMessage = `Add translated articles.`;
+      execSync(`git commit -m "${commitMessage}"`);
     }
     lg("Begin push file to remote repo---");
-    const commitMessage = `Add translated articles.`;
-    execSync(`git commit -m "${commitMessage}"`);
     execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
     lg(`Committed ${filename} to GitHub repository`);
     lg("End push file to remote repo---");
