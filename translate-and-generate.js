@@ -4,7 +4,7 @@
 import fs from 'fs';
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
-const { execSync } = import('child_process');
+import { execSync } from 'child_process';
 
 async function translateNews(newsListPath) {
   try {
