@@ -67,9 +67,44 @@ async function translateNews(newsListPath) {
 }
 
 async function translateWithThirdPartyAPI(text) {
-  // 实际应用中，调用第三方 API 来翻译文本
-  // 这里你需要替换成实际的 API 调用方式
-  return `<p class="trans-content">${text}</p>`;
+  // 设置请求的头部信息
+  const headers = {
+    'accept': 'application/json',
+    'content-type': 'application/json',
+    'Authorization': 'bearer SUxHsADip5WwlDdqSeVFQiaAdfadzJWHqIBPAmsd'
+  };
+
+  // 准备发送的数据
+  const data = {
+    message: text,
+    model: 'command-r-plus',
+    preamble: '作为一个专业的翻译大师，请根据我的内容帮忙翻译成中文.文章的内容大多来自CNN.'
+  };
+
+  // 发送 POST 请求
+  var aiRes = null;
+  await fetch('https://api.cohere.com/v1/chat', {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(data)
+  })
+    .then(async response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      // aiRes = await response.json();
+      // console.log(aiRes)
+      // return Response.json(aiRes);
+    })
+    .then(data => {
+      aiRes = data;
+      console.log('Response:', data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+
+  return `<p class="trans-content">${aiRes?.text}</p>`;
 }
 
 // 从命令行参数中获取 newsList.json 文件的路径
