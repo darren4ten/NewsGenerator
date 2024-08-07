@@ -40,6 +40,7 @@ async function translateNews(newsListPath) {
       console.log(`Translated article saved to ${newsItem.id}`);
       // 提交生成的文件到 GitHub 仓库的 news 目录下
       const commitMessage = `Add translated article ${filename}`;
+      execSync(`-c "user.name=darren4ten" -c "user.email=darren4ten@163.com"`);
       execSync(`git add ${filename}`);
       execSync(`git commit -m "${commitMessage}"`);
       execSync(`git push origin HEAD`);
