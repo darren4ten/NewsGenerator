@@ -63,7 +63,7 @@ async function translateNews(newsListPath) {
     }
     const commitMessage = `Add translated articles.`;
     execSync(`git commit -m "${commitMessage}"`);
-    lg(`Committed ${filename} to GitHub repository`);
+    lg(`Committed files to GitHub repository`);
     lg("Begin push file to remote repo---");
     execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
 
