@@ -48,8 +48,8 @@ async function translateNews(newsListPath) {
       const authorName = 'darren4ten';
       const authorEmail = 'darren4ten@163.com';
       // 设置用户信息
-      execSync(`git config user.name "${authorName}"`);
-      execSync(`git config user.email "${authorEmail}"`);
+      execSync(`git config  --global user.name "${authorName}"`);
+      execSync(`git config  --global user.email "${authorEmail}"`);
 
       // 执行提交
       execSync(`git add ${filename}`);
