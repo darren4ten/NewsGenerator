@@ -7,10 +7,13 @@ import { JSDOM } from 'jsdom';
 
 async function translateNews(newsListPath) {
   try {
+    console.log("newsListPath:"+newsListPath);
     // 读取 newsList.json 文件
     const newsList = JSON.parse(fs.readFileSync(newsListPath, 'utf-8'));
 
     for (const newsItem of newsList) {
+      
+       console.log("process url:"+newsItem.url);
       // 使用 fetch 获取新闻网页内容
       const response = await fetch(newsItem.url);
       const html = await response.text();
@@ -22,6 +25,7 @@ async function translateNews(newsListPath) {
       const mainArticle = dom.window.document.querySelector('.article__main');
       const articleText = mainArticle.textContent.trim();
       
+       console.log("articleText :"+articleText);
       // 调用第三方 API 进行翻译，这里使用假设的 API 接口
       const translatedText = await translateWithThirdPartyAPI(articleText);
       
