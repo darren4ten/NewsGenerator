@@ -1,6 +1,7 @@
 {
   "name": "translate-news",
   "version": "1.0.0",
+  "type": "module",
   "description": "Translate news articles and generate static HTML",
   "dependencies": {
     "node-fetch": "^3.0.0",
