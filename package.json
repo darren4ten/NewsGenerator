@@ -1,0 +1,9 @@
+{
+  "name": "translate-news",
+  "version": "1.0.0",
+  "description": "Translate news articles and generate static HTML",
+  "dependencies": {
+    "node-fetch": "^3.0.0",
+    "jsdom": "^17.0.0"
+  }
+}
