@@ -1,7 +1,7 @@
-//const fs = require('fs');
+const fs = require('fs');
 //const fetch = require('node-fetch');
 //const { JSDOM } = require('jsdom');
-import fs from 'fs';
+//import fs from 'fs';
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
 
