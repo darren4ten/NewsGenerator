@@ -13,7 +13,9 @@ async function translateNews(newsListPath) {
     // 提交生成的文件到 GitHub 仓库的 news 目录下
     const authorName = 'darren4ten';
     const authorEmail = 'darren4ten@163.com';
-
+    // 设置用户信息
+    execSync(`git config  --global user.name "${authorName}"`);
+    execSync(`git config  --global user.email "${authorEmail}"`);
 
     lg("githubToken:" + githubToken.length);
     lg("newsListPath:" + newsListPath);
@@ -51,21 +53,19 @@ async function translateNews(newsListPath) {
       lg("End write file---");
       lg(`Translated article saved to ${newsItem.id}`);
 
-      // 设置用户信息
-      execSync(`git config  --global user.name "${authorName}"`);
-      execSync(`git config  --global user.email "${authorEmail}"`);
+
       lg("Begin add file to local repo---");
       // 执行提交
       execSync(`git add ${filename}`);
       lg("End add file to local repo---");
       const elapsedTime = stopTimer(startTime);
       lg(`Translate file${filename} cost ${elapsedTime} ms`);
-      const commitMessage = `Add translated articles.`;
-      execSync(`git commit -m "${commitMessage}"`);
-      lg(`Committed ${filename} to GitHub repository`);
-      lg("Begin push file to remote repo---");
-      execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
     }
+    const commitMessage = `Add translated articles.`;
+    execSync(`git commit -m "${commitMessage}"`);
+    lg(`Committed ${filename} to GitHub repository`);
+    lg("Begin push file to remote repo---");
+    execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
 
     lg("End push file to remote repo---");
     lg('Translation process completed successfully.');
@@ -130,7 +130,7 @@ async function translateWithThirdPartyAPI(text) {
     if (!aiRes.ok) {
       throw new Error('AI Network response was not ok');
     }
-    var result = aiRes.json();
+    var result = await aiRes.json();
     return `<p class="trans-content">${result?.text}</p>`;
 
   } catch (error) {
