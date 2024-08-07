@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "translate-and-generate": "node translate-and-generate.js"
+  }
+}
