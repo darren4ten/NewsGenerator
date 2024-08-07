@@ -35,7 +35,7 @@ async function translateNews(newsListPath) {
 
       // 将生成的 HTML 写入文件
       const filename = `news/article_${newsItem.id}.html`;
-      fs.writeFileSync(filename, newHtml);
+      fs.writeFileSync(filename, staticHTML);
 
       console.log(`Translated article saved to ${newsItem.id}`);
       // 提交生成的文件到 GitHub 仓库的 news 目录下
