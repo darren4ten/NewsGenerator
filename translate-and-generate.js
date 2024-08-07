@@ -10,6 +10,13 @@ async function translateNews(newsListPath) {
   try {
     // 获取 GitHub Token 作为环境变量传入
     const githubToken = process.env.G_AI_NEWS;
+    // 提交生成的文件到 GitHub 仓库的 news 目录下
+    const authorName = 'darren4ten';
+    const authorEmail = 'darren4ten@163.com';
+    // 设置用户信息
+    execSync(`git config  --global user.name "${authorName}"`);
+    execSync(`git config  --global user.email "${authorEmail}"`);
+
     console.log("githubToken:" + githubToken.length);
     console.log("newsListPath:" + newsListPath);
     // 读取 newsList.json 文件
@@ -17,7 +24,7 @@ async function translateNews(newsListPath) {
 
     for (const newsItem of newsList) {
       const startTime = startTimer();
-      console.log("process url:" + newsItem.url);
+      console.log(`[${new Date()}]` + "process url:" + newsItem.url);
       // 使用 fetch 获取新闻网页内容
       const response = await fetch(newsItem.url);
       const html = await response.text();
@@ -29,35 +36,36 @@ async function translateNews(newsListPath) {
       const mainArticle = dom.window.document.querySelector('.article__main');
       const articleText = mainArticle.textContent.trim();
 
-      console.log("articleText :" + articleText.length);
+      console.log(`[${new Date()}]` + "articleText :" + articleText.length);
+      console.log(`[${new Date()}]` + "Begin call translateWithThirdPartyAPI");
+
       // 调用第三方 API 进行翻译，这里使用假设的 API 接口
       const translatedText = await translateWithThirdPartyAPI(articleText);
+      console.log(`[${new Date()}]` + "End call translateWithThirdPartyAPI");
 
       // 生成静态 HTML 文件
       const staticHTML = `<html><body><h1>Translated Article</h1><p>${translatedText}</p></body></html>`;
 
       // 将生成的 HTML 写入文件
+      console.log(`[${new Date()}]` + "Begin write file---");
       const filename = `news/article_${newsItem.id}.html`;
       fs.writeFileSync(filename, staticHTML);
+      console.log(`[${new Date()}]` + "End write file---");
+      console.log(`[${new Date()}]` + `Translated article saved to ${newsItem.id}`);
 
-      console.log(`Translated article saved to ${newsItem.id}`);
-      // 提交生成的文件到 GitHub 仓库的 news 目录下
-      const authorName = 'darren4ten';
-      const authorEmail = 'darren4ten@163.com';
-      // 设置用户信息
-      execSync(`git config  --global user.name "${authorName}"`);
-      execSync(`git config  --global user.email "${authorEmail}"`);
-
+      console.log(`[${new Date()}]` + "Begin add file to local repo---");
       // 执行提交
       execSync(`git add ${filename}`);
+      console.log(`[${new Date()}]` + "End add file to local repo---");
       const elapsedTime = stopTimer(startTime);
       console.log(`Translate file${filename} cost ${elapsedTime} ms`);
     }
+    console.log(`[${new Date()}]` + "Begin push file to remote repo---");
     const commitMessage = `Add translated articles.`;
     execSync(`git commit -m "${commitMessage}"`);
     execSync(`git push https://${githubToken}@github.com/${process.env.GITHUB_REPOSITORY}.git HEAD:main`);
     console.log(`Committed ${filename} to GitHub repository`);
-
+    console.log(`[${new Date()}]` + "End push file to remote repo---");
     console.log('Translation process completed successfully.');
   } catch (error) {
     console.error('Error during translation:', error);
